@@ -20,8 +20,6 @@ public class BalanceParanthesis {
                     p.pop();
                     continue;
                 }
-                System.out.println("Given pairs of string is not balanced");
-                return;
             }
         }
         if (!p.isEmpty()){
