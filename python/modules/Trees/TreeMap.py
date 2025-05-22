@@ -12,11 +12,11 @@ class TreeMap:
             
             if key < root.key:
                 root.left = innerSetFunction(root.left, key, value)
-                root.parent = root
+                root.left.parent = root
             
             if key > root.key:
                 root.right = innerSetFunction(root.right, key, value)
-                root.parent = root
+                root.right.parent = root
             
             return root
         
@@ -48,6 +48,83 @@ class TreeMap:
             item.value = value
             return True
         return False
+    
+    @staticmethod
+    def findSuccessor(root, key):
+        
+        if root is None:
+            return None
+
+        successor = None
+        curr = root
+        while curr is not None:
+            if curr.key > key:
+                successor = curr
+                curr = curr.left
+                continue
+            
+            if key >= curr.key:
+                curr = curr.right
+
+        return successor
+    
+    @staticmethod
+    def helper_method(root):
+        curr = root
+        while curr.right is not None:
+            curr = curr.right
+        return curr
+    
+    def deleteItem(self, key):
+
+        if self.__root.key == key:
+            if self.__root.left is None and self.__root.right is None:
+                self.__root = None
+            elif self.__root.left is not None:
+                sibling_r = self.__root.right
+                self.__root = self.__root.left
+
+                curr = self.__root
+                right_leaf = TreeMap.helper_method(curr)
+                right_leaf.right = sibling_r
+                self.__root.parent = None
+            else:
+                self.__root = self.__root.right
+                self.__root.parent = None
+
+            return
+
+
+        node = self.__findItem(key)
+
+        if node is not None:
+            ancestor = node.parent
+            if node.left is None and node.right is None:
+                if node.key < ancestor.key:
+                    ancestor.left = None
+                else:
+                    ancestor.right = None
+            elif node.left is not None:
+                sibling_l = node.left
+                sibling_r = node.right
+                right_leaf = TreeMap.helper_method(sibling_l)
+
+                if node.key < ancestor.key:
+                    ancestor.left = sibling_l
+                else:
+                    ancestor.right = sibling_l
+                right_leaf.right = sibling_r
+                sibling_l.parent = ancestor
+            else:
+                sibling_r = node.right
+                if node.key < ancestor.key:
+                    ancestor.left = sibling_r
+                else:
+                    ancestor.right = sibling_r
+                sibling_r.parent = ancestor
+            node.parent = None
+        else:
+            raise ValueError("key not found")
     
     @classmethod
     def calculateMin(cls, root):
@@ -109,6 +186,7 @@ class TreeMap:
             root = BSTNode(key, value)
             root.left = cls.create_balance_binary_tree(arr, lo, mid -1, root)
             root.right = cls.create_balance_binary_tree(arr, mid + 1, hi, root)
+            root.parent = parent
 
             return root
     
@@ -135,3 +213,6 @@ class TreeMap:
         if item is None:
             return -1
         return item.value
+    
+    def __delitem__(self, key):
+        self.deleteItem(key)

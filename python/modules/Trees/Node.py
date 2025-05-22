@@ -12,4 +12,4 @@ class BSTNode:
         return f'BSTNode(Key={self.key}, value={self.value}'
     
     def __str__(self):
-        return self.__str__()
+        return self.__repr__()
