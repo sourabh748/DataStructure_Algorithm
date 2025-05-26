@@ -1,4 +1,4 @@
-from typing import List, Any, Optional
+from typing import List, Any, Optional, Union
 
 def bubble_sort(arr: List[Any], increasing: Optional[bool] = True ) -> None:
     '''
@@ -108,3 +108,45 @@ def merge_sort(arr:List[Any] ) -> None:
             merge(arr, lo, mid, hi)
 
     sort(arr, 0, len(arr) -1)
+
+def partition(arr: List[Any], start: int, end: int) -> int:
+    left, right = start, end -1
+
+    while right > left:
+
+        if arr[left] <= arr[end]:
+            left += 1
+        elif arr[right] > arr[end]:
+            right -= 1
+        else:
+            arr[left], arr[right] = arr[right], arr[left]
+            left += 1
+    
+    if arr[left] > arr[end]:
+        arr[left], arr[end] = arr[end], arr[left]
+        return left
+    
+    return end
+
+def quick_sort(arr: List[Any], start: int=0, end: Optional[Union[int, None]]= None) -> None:
+    '''
+    Quicksort
+    To overcome the space inefficiencies of merge sort, we'll study another divide-and-conquer based
+    sorting algorithm called quicksort, which works as follows:
+        1. If the list is empty or has just one element, return it. It's already sorted.
+        2. Pick a random element from the list. This element is called a pivot.
+        3. Reorder the list so that all elements with values less than or equal to the pivot come before the
+            pivot, while all elements with values greater than the pivot come after it. This operation is
+            called partitioning.
+        4. The pivot element divides the array into two parts which can be sorted independently by
+            making a recursive call to quicksort.
+
+    Worst Time complexity of QuickSort is O(N^2)
+    '''
+    if end is None:
+        end = len(arr) -1
+    
+    if end > start:
+        pivot = partition(arr, start, end)
+        quick_sort(arr, start, pivot -1)
+        quick_sort(arr, pivot + 1, end)
